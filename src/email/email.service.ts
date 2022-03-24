@@ -59,6 +59,22 @@ export class emailService {
     return { config: config };
   }
 
+  async getTemplates(projectId: string, ownerId: string) {
+    const config = await this.configModel.findOne({
+      owner: ownerId,
+      projectId: projectId,
+    });
+
+    if (!config) {
+      throw new ApplicationException(
+        'Invalid projectId or you dont have access to this project',
+        400,
+      );
+    }
+
+    return config;
+  }
+
   async sendBulkEmail(sendBulkEmailDTO: sendBulkEmailDTO) {
     // const config = await thi
 

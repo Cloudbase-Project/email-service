@@ -54,6 +54,13 @@ export class emailController {
     );
   }
 
+  @Get('/:projectId/templates')
+  @HttpCode(200)
+  @UseGuards(OwnerGuard)
+  getTemplate(@Param('projectId') projectId: string) {
+    return this.emailService.getTemplates(projectId, this.req.ownerId);
+  }
+
   @Post('/register') // route
   @HttpCode(201) // Return type
   @UseGuards(OwnerGuard)
