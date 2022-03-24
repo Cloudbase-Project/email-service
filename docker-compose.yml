@@ -1,0 +1,28 @@
+services:
+  mongo:
+    image: mongo
+    restart: always
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    command: mongod --quiet --logpath /dev/null 
+    ports:
+      - 27017:27017
+  server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      # dockerfile: Dockerfile.multistage
+    ports:
+      - '4000:4000'
+      # - '3001:3001'
+    volumes:
+      - /app/node_modules
+      - ./:/app/
+    depends_on:
+      mongo:
+        condition: service_healthy
+ 
