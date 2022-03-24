@@ -7,6 +7,8 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigDocument } from 'src/config/entities/config.entity';
 import { TemplateDocument } from 'src/config/entities/template.entity';
+import { ApplicationException } from 'src/utils/exception/ApplicationException';
+import { createTemplateDTO } from 'src/config/dtos/createTemplate.dto';
 
 @Injectable()
 export class emailService {
@@ -30,7 +32,32 @@ export class emailService {
     });
   }
 
-  async createTemplate(createTemplateDTO: createTemplateDTO) {}
+  async createTemplate(
+    createTemplateDTO: createTemplateDTO,
+    projectId: string,
+    ownerId: string,
+  ) {
+    const config = await this.configModel.findOne({
+      owner: ownerId,
+      projectId: projectId,
+    });
+
+    if (!config) {
+      throw new ApplicationException(
+        'Invalid projectId or you dont have access to this project',
+        400,
+      );
+    }
+
+    const template = await this.templateModel.create({
+      template: createTemplateDTO.template,
+      name: createTemplateDTO.name,
+    });
+
+    config.templates.push(template);
+    await config.save();
+    return { config: config };
+  }
 
   async sendBulkEmail(sendBulkEmailDTO: sendBulkEmailDTO) {
     // const config = await thi
