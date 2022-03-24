@@ -100,7 +100,7 @@ export class emailService {
     const template = await this.templateModel.findById(templateId);
 
     for (const emailId of emails) {
-      this.transporter.sendMail({
+      await this.transporter.sendMail({
         from: process.env.SENDER_EMAIL,
         to: emailId,
         subject: subject,
