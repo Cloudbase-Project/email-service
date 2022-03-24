@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudbase-email-service-depl
+spec:
+  selector:
+    matchLabels:
+      app: cloudbase-email-service-depl
+  template:
+    metadata:
+      labels:
+        app: cloudbase-email-service-depl
+    spec:
+      containers:
+        - name: cloudbase-email-service-depl
+          image: vnavaneeth/cloudbase-email-service
+          resources:
+            # limits:
+            #   memory: "128Mi"
+            #   cpu: "500m"
+          # ports:
+          # - containerPort: <Port>
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudbase-email-service-svc
+spec:
+  selector:
+    app: cloudbase-email-service-depl
+  type: ClusterIP
+  ports:
+    - port: 4000
+      targetPort: 4000
