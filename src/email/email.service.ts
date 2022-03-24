@@ -18,7 +18,7 @@ export class emailService {
   constructor(
     public Jwt: JWT,
     public Templates: Templates,
-    @InjectModel('User')
+    @InjectModel('Config')
     private readonly configModel: Model<ConfigDocument>,
     @InjectModel('Template')
     private readonly templateModel: Model<TemplateDocument>,

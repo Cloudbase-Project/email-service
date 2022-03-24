@@ -29,23 +29,6 @@ export class configController {
     @Inject(REQUEST) private readonly req: Request,
   ) {}
 
-  @Get('/:projectId/users') // route
-  @ApiHeader({ name: 'Authorization', required: true })
-  @UseGuards(OwnerGuard)
-  @HttpCode(200) // Return type
-  viewUsers(
-    @Param('projectId') projectId: string,
-    @Query('per_page') per_page: string,
-    @Query('page') page: string,
-  ) {
-    return this.configService.viewUsers(
-      this.req.ownerId,
-      projectId,
-      per_page,
-      page,
-    );
-  }
-
   // internal route
   @Post('/')
   @HttpCode(201)

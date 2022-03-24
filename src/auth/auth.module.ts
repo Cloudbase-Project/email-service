@@ -1,6 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { User, UserSchema } from 'src/user/entities/user.entity';
 import { authController } from './auth.controller';
 import { authService } from './auth.service';
 import { Password } from './utils/password';
@@ -14,10 +13,7 @@ import { Config, ConfigSchema } from 'src/config/entities/config.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: Config.name, schema: ConfigSchema },
-    ]),
+    MongooseModule.forFeature([{ name: Config.name, schema: ConfigSchema }]),
     ConfigModule,
     forwardRef(() => configModule),
     forwardRef(() => emailModule),

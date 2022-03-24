@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { userModule } from './user/user.module';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthController } from './health/health.controller';
 import { authModule } from './auth/auth.module';
@@ -11,8 +10,8 @@ import AdminJS from 'adminjs';
 import { Database, Resource } from '@adminjs/mongoose';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from './user/entities/user.entity';
 import { configModule } from './config/config.module';
+import { emailModule } from './email/email.module';
 
 console.log('AdminJSMongoose : ', Database, Resource);
 
@@ -24,16 +23,16 @@ AdminJS.registerAdapter({ Database, Resource });
     TerminusModule, // for healthchecks
     MongooseModule.forRoot(process.env.MONGODB_URI), // orm
 
-    AdminModule.createAdminAsync({
-      inject: [getModelToken('User')],
-      imports: [userModule],
-      useFactory: (userModel: Model<User>) => ({
-        adminJsOptions: {
-          rootPath: '/admin',
-          resources: [{ resource: userModel }],
-        },
-      }),
-    }),
+    // AdminModule.createAdminAsync({
+    //   inject: [getModelToken('User')],
+    //   imports: [userModule],
+    //   useFactory: (userModel: Model<User>) => ({
+    //     adminJsOptions: {
+    //       rootPath: '/admin',
+    //       resources: [{ resource: userModel }],
+    //     },
+    //   }),
+    // }),
 
     // AdminModule.createAdminAsync({
     //   imports: [TypegooseSchemasModule],
@@ -44,7 +43,7 @@ AdminJS.registerAdapter({ Database, Resource });
     //   },
     // }),
 
-    userModule, // your resource
+    emailModule, // your resource
     authModule,
     configModule,
   ],

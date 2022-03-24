@@ -5,17 +5,17 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Config, ConfigSchema } from 'src/config/entities/config.entity';
 import { configService } from './config.service';
 import { configController } from './config.controller';
-import { User, UserSchema } from 'src/user/entities/user.entity';
-import { userModule } from 'src/user/user.module';
 import Utils from './utils/utils';
+import { Template, TemplateSchema } from './entities/template.entity';
+import { emailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Config.name, schema: ConfigSchema },
-      { name: User.name, schema: UserSchema },
+      { name: Template.name, schema: TemplateSchema },
     ]),
-    forwardRef(() => userModule),
+    forwardRef(() => emailModule),
     forwardRef(() => authModule),
   ],
   controllers: [configController],
