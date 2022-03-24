@@ -9,6 +9,7 @@ import { ConfigDocument } from 'src/config/entities/config.entity';
 import { TemplateDocument } from 'src/config/entities/template.entity';
 import { ApplicationException } from 'src/utils/exception/ApplicationException';
 import { createTemplateDTO } from 'src/config/dtos/createTemplate.dto';
+import { sendBulkEmailDTO } from 'src/config/dtos/sendBulkEmail.dto';
 
 @Injectable()
 export class emailService {
@@ -75,10 +76,28 @@ export class emailService {
     return config;
   }
 
-  async sendBulkEmail(sendBulkEmailDTO: sendBulkEmailDTO) {
+  async sendBulkEmail(
+    sendBulkEmailDTO: sendBulkEmailDTO,
+    projectId: string,
+    ownerId: string,
+  ) {
     // const config = await thi
 
-    const { emails, template, subject, text } = sendBulkEmailDTO;
+    const { emails, templateId, subject, text } = sendBulkEmailDTO;
+
+    const config = await this.configModel.findOne({
+      owner: ownerId,
+      projectId: projectId,
+    });
+
+    if (!config) {
+      throw new ApplicationException(
+        'Invalid projectId or you dont have access to this project',
+        400,
+      );
+    }
+
+    const template = await this.templateModel.findById(templateId);
 
     for (const emailId of emails) {
       this.transporter.sendMail({
@@ -86,66 +105,10 @@ export class emailService {
         to: emailId,
         subject: subject,
         text: text,
-        html: template,
+        html: template.template,
       });
     }
-  }
 
-  async sendVerificationEmail({
-    email,
-    id,
-    projectId,
-  }: {
-    email: string;
-    id: string;
-    projectId: string;
-  }) {
-    const token = this.Jwt.newToken<{
-      email: string;
-      id: string;
-      fromEmail: boolean;
-      projectId: string;
-    }>({ email: email, id, fromEmail: true, projectId }, { expiresIn: '24h' });
-
-    return this.transporter.sendMail({
-      from: process.env.SENDER_EMAIL,
-      to: email,
-      subject: 'Message',
-      text: 'Checking 123',
-      html: this.Templates.verificationEmailTemplate({
-        url: `${process.env.BACKEND_URL}/auth/verify?token=${token}`,
-        site: 'www.hse.com',
-        email,
-      }),
-    });
-  }
-
-  async sendResetPasswordEmail({
-    email,
-    id,
-    projectId,
-  }: {
-    email: string;
-    id: string;
-    projectId: string;
-  }) {
-    const token = this.Jwt.newToken<{
-      email: string;
-      id: string;
-      fromEmail: boolean;
-      projectId: string;
-    }>({ email: email, id, fromEmail: true, projectId }, { expiresIn: '24h' });
-
-    return this.transporter.sendMail({
-      from: process.env.SENDER_EMAIL,
-      to: email,
-      subject: 'Reset Password',
-      text: 'Checking 123',
-      html: this.Templates.resetPasswordTemplate({
-        url: `${process.env.NEXTJS_URL}/auth/verify/password?token=${token}`,
-        site: 'www.hse.com',
-        email,
-      }),
-    });
+    return { message: 'email sent' };
   }
 }

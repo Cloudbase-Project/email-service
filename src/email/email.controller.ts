@@ -18,6 +18,7 @@ import { OwnerGuard } from 'src/config/guards/ownerGuard';
 import { ValidationException } from '../utils/exception/ValidationException';
 import { emailService } from './email.service';
 import { Request } from 'express';
+import { sendBulkEmailDTO } from 'src/config/dtos/sendBulkEmail.dto';
 
 @Controller('email')
 export class emailController {
@@ -61,8 +62,8 @@ export class emailController {
     return this.emailService.getTemplates(projectId, this.req.ownerId);
   }
 
-  @Post('/register') // route
-  @HttpCode(201) // Return type
+  @Post('/sendMail') // route
+  @HttpCode(200) // Return type
   @UseGuards(OwnerGuard)
   sendBulkEmail(
     @Body(
@@ -73,7 +74,12 @@ export class emailController {
       }),
     )
     sendBulkEmailDTO: sendBulkEmailDTO,
+    @Param('projectId') projectId: string,
   ) {
-    return this.emailService.sendBulkEmail(registerUserDTO);
+    return this.emailService.sendBulkEmail(
+      sendBulkEmailDTO,
+      projectId,
+      this.req.ownerId,
+    );
   }
 }
