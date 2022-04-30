@@ -1,33 +1,33 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: cloudbase-email-service-mongo-depl
-spec:
-  selector:
-    matchLabels:
-      app: cloudbase-email-service-mongo-depl
-  template:
-    metadata:
-      labels:
-        app: cloudbase-email-service-mongo-depl
-    spec:
-      containers:
-        - name: cloudbase-email-service-mongo-depl
-          image: mongo
-          resources:
-            # limits:
-            #   memory: '128Mi'
-            #   cpu: '500m'
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: cloudbase-email-service-mongo-depl
+# spec:
+#   selector:
+#     matchLabels:
+#       app: cloudbase-email-service-mongo-depl
+#   template:
+#     metadata:
+#       labels:
+#         app: cloudbase-email-service-mongo-depl
+#     spec:
+#       containers:
+#         - name: cloudbase-email-service-mongo-depl
+#           image: mongo
+#           resources:
+#             # limits:
+#             #   memory: '128Mi'
+#             #   cpu: '500m'
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: cloudbase-email-service-mongo-svc
-spec:
-  selector:
-    app: cloudbase-email-service-mongo-depl
-  type: ClusterIP
-  ports:
-    - port: 27017
-      targetPort: 27017
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: cloudbase-email-service-mongo-svc
+# spec:
+#   selector:
+#     app: cloudbase-email-service-mongo-depl
+#   type: ClusterIP
+#   ports:
+#     - port: 27017
+#       targetPort: 27017
