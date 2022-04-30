@@ -9,6 +9,7 @@ declare global {
       ownerEmail?: string;
       ownerId?: string;
       isOwner?: boolean;
+      token?: string;
     }
   }
 }
